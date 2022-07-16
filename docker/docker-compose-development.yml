@@ -3,7 +3,7 @@ services:
   frontend:
     restart: always
     command : npm start
-    build: ./frontend/
+    build: ../frontend/
     ports:
       - "3000:3000"
     stdin_open: true
@@ -18,7 +18,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./backend/:/usr/src/backend
+      - ../backend/:/usr/src/backend
     command: python manage.py runserver 0.0.0.0:8000
     environment:
       - DB_NAME=admin
@@ -33,7 +33,7 @@ services:
       - migration
 
   migration:
-    build: ./backend/
+    build: ../backend/
     command: python manage.py migrate --noinput
     environment:
       - DB_NAME=admin
