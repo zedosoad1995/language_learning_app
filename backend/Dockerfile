@@ -1,0 +1,16 @@
+FROM python:3.10.4-alpine3.16
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev
+
+WORKDIR /backend
+
+COPY requirements.txt requirements.txt
+
+RUN /usr/local/bin/python -m pip install --upgrade pip
+RUN python -m pip install -r requirements.txt
+
+COPY . .

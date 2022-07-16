@@ -1,0 +1,7 @@
+data.json
+db.sqlite3
+TODO.txt
+.env
+.vscode
+venv
+_pycache_*
