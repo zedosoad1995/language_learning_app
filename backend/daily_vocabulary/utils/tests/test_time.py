@@ -2,13 +2,6 @@ import datetime
 from django.test import SimpleTestCase
 from pytz import timezone as py_timezone
 
-from django import setup
-import os
-
-from daily_vocabulary.utils.utils import get_days_since
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "language_learning.settings")
-setup()
-
 
 class TestDaysDifference(SimpleTestCase):
     def test_small_minute_difference_different_day_same_timezone_return_1_day_diff(self):

@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+
+  backend:
+    build: ./backend/
+    restart: always
+    ports:
+      - 8000:8000
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DB_URL=postgres://smtuzaqzplildo:f20289e41535df4d40f1e43d4db68a33439fb3ce838f04eec4224cb533945987@ec2-18-214-35-70.compute-1.amazonaws.com:5432/daol8ed8ulpt40
+      - STAGE=dev
+    networks:
+      - db-network
+    depends_on:
+      - db
+      - migration
+
+  migration:
+    build: ../backend/
+    command: python manage.py migrate --noinput
+    environment:
+      - DB_URL=postgres://smtuzaqzplildo:f20289e41535df4d40f1e43d4db68a33439fb3ce838f04eec4224cb533945987@ec2-18-214-35-70.compute-1.amazonaws.com:5432/daol8ed8ulpt40
+      - STAGE=dev
+    networks:
+      - db-network
+    depends_on:
+      - db
+
+networks:
+  db-network:
+    driver: bridge
