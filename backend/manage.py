@@ -6,12 +6,12 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    stage = os.getenv('STAGE')
+    django_env = os.getenv('DJANGO_ENV')
 
-    if stage == 'dev':
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings-development')
-    elif stage == 'prod':
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings-production')
+    if django_env == 'dev':
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings_development')
+    elif django_env == 'prod':
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings_production')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

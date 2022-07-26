@@ -8,7 +8,7 @@ RUN apk update \
 
 WORKDIR /backend
 
-COPY requirements.txt requirements.txt
+COPY ../requirements.txt requirements.txt
 
 RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN python -m pip install -r requirements.txt

@@ -11,11 +11,11 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-stage = os.getenv('STAGE')
+django_env = os.getenv('DJANGO_ENV')
 
-if stage == 'dev':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings-development')
-elif stage == 'prod':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings-production')
+if django_env == 'dev':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings_development')
+elif django_env == 'prod':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'language_learning.settings_production')
 
 application = get_wsgi_application()
