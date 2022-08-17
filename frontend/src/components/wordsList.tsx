@@ -16,8 +16,8 @@ import Divider from "@mui/material/Divider"
 
 
 export default function WordsList() {
-	const [textFilter, setTextFilter]: [any, any] = useState('')
-	const [words, setWords]: [any, any] = useState([])
+  const [textFilter, setTextFilter]: [any, any] = useState('')
+  const [words, setWords]: [any, any] = useState([])
   const navigate = useNavigate()
 
   const updateList = () => {
@@ -27,16 +27,16 @@ export default function WordsList() {
       })
   }
 
-	useEffect(() => {
-		updateList()
-	}, [])
+  useEffect(() => {
+    updateList()
+  }, [])
 
-  const filteredWords = useMemo(() => {return words.filter((word: any) => word.original_word.toLowerCase().startsWith(textFilter))}, [textFilter, words])
+  const filteredWords = useMemo(() => { return words.filter((word: any) => word.original_word.toLowerCase().startsWith(textFilter.toLowerCase())) }, [textFilter, words])
 
   const deleteWord = (e: any) => {
     const id = e.currentTarget.getAttribute('data-index')
     httpRequest('DEL', `words/${id}/`)
-      .then(() => {updateList()})
+      .then(() => { updateList() })
   }
 
   const getWordDetails = (e: any) => {
@@ -48,7 +48,7 @@ export default function WordsList() {
     const text = e.target.value
     setTextFilter(text)
   }
-  
+
 
   return (
     <>
@@ -78,7 +78,7 @@ export default function WordsList() {
               }
               disablePadding
             >
-              <ListItemButton dense data-index={word.id} onClick={(e) => {getWordDetails(e)}}>
+              <ListItemButton dense data-index={word.id} onClick={(e) => { getWordDetails(e) }}>
                 <ListItemText primary={word.original_word} />
               </ListItemButton>
             </ListItem>

@@ -1,15 +1,15 @@
 import axios from 'axios'
 
-const baseURL = 'http://127.0.0.1:8000/'
+const baseURL = process.env.REACT_ENV === 'prod' ? 'https://agile-harbor-55928.herokuapp.com/' : 'http://127.0.0.1:8000/'
 
 let axiosInfo: any = {
-    baseURL: baseURL,
-    timeout: 5000,
-    headers: {
-        'Content-Type': 'application/json',
-        accept: 'application/json',
+	baseURL: baseURL,
+	timeout: 5000,
+	headers: {
+		'Content-Type': 'application/json',
+		accept: 'application/json',
 		Authorization: ''
-    },
+	},
 }
 
 const axiosInstance = axios.create(axiosInfo)
@@ -24,8 +24,8 @@ axiosInstance.interceptors.response.use(
 		if (typeof error.response === 'undefined') {
 			alert(
 				'A server/network error occurred. ' +
-					'Looks like CORS might be the problem. ' +
-					'Sorry about this - we will get it fixed shortly.'
+				'Looks like CORS might be the problem. ' +
+				'Sorry about this - we will get it fixed shortly.'
 			);
 			return Promise.reject(error);
 		}
@@ -77,7 +77,7 @@ axiosInstance.interceptors.response.use(
 				console.log('Refresh token not available.');
 				window.location.href = '/login/';
 			}
-		} else if(
+		} else if (
 			error.response.status === 401 &&
 			error.response.statusText === 'Unauthorized' &&
 			error.response.data.detail === 'Authentication credentials were not provided.'
