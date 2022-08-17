@@ -2,14 +2,14 @@ version: "3.8"
 services:
   frontend:
     restart: always
-    command : npm start
+    command : npm run startDev
     build: 
       context: ./frontend
       dockerfile: dockerfiles/Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/:/usr/src/frontend
+      - ./frontend/:/frontend
     stdin_open: true
     environment:
       - REACT_ENV=dev
@@ -26,7 +26,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./backend/:/usr/src/backend
+      - ./backend/:/backend
     command: python manage.py runserver 0.0.0.0:8000
     environment:
       - DB_NAME=admin

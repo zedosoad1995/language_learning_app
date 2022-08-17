@@ -33,6 +33,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
+    "startDev": "WATCHPACK_POLLING=true react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

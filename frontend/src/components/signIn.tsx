@@ -32,7 +32,7 @@ export default function SignIn() {
       username: data.get('username'),
       password: data.get('password'),
     }
-    
+
     httpRequest('POST', 'token/', payload)
       .then((res) => {
         localStorage.setItem('access_token', res.data.access)
@@ -44,7 +44,7 @@ export default function SignIn() {
 
   useEffect(() => {
     console.log('Login', loggedIn)
-    if(loggedIn){
+    if (loggedIn) {
       navigate('/')
     }
   }, [])
