@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Fab from '@mui/material/Fab'
-import Box from '@mui/material/Box'
 import AddIcon from '@mui/icons-material/Add'
 import DailyUnseenWord from "./dailyUnseenWord"
 import WordsOfTheDay from "./wordsOfTheDay"
@@ -52,9 +51,9 @@ function Home() {
       <Fab color="primary" aria-label="add" sx={fabStyle} onClick={() => navigate("/add_word")}>
         <AddIcon />
       </Fab>
-      { isDailyWordsSeen ? 
-      <WordsOfTheDay words={words}/> 
-      : <DailyUnseenWord words={words} onUpdateWords={onUpdateDailyUnseenWords}/>}
+      {isDailyWordsSeen ?
+        <WordsOfTheDay words={words} />
+        : <DailyUnseenWord words={words} onUpdateWords={onUpdateDailyUnseenWords} />}
     </>
   );
 }

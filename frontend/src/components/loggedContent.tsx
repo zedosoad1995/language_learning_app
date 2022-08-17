@@ -30,11 +30,11 @@ function LoggedContent() {
     const accessToken = localStorage.getItem('access_token')
     const refreshToken = localStorage.getItem('refresh_token')
 
-    if(!accessToken || !refreshToken){
+    if (!accessToken || !refreshToken) {
       localStorage.removeItem('access_token')
       localStorage.removeItem('refresh_token')
       window.location.href = '/login/';
-    }else{
+    } else {
       dispatch(logIn())
     }
 
@@ -43,11 +43,11 @@ function LoggedContent() {
 
   return (
     <Routes>
-    <Route path="/" element={<Home/>} />
-    <Route path="/add_word" element={<AddWord/>} />
-    <Route path="/word_list" element={<WordsList />} />
-    <Route path="/word/:id" element={<WordDetail />} />
-    <Route path="/settings" element={<Settings user={user} />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/add_word" element={<AddWord />} />
+      <Route path="/word_list" element={<WordsList />} />
+      <Route path="/word/:id" element={<WordDetail />} />
+      <Route path="/settings" element={<Settings user={user} updateUser={getUser} />} />
     </Routes>
   );
 }
