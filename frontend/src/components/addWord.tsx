@@ -16,16 +16,18 @@ import FormHelperText from '@mui/material/FormHelperText'
 import Input from '@mui/material/Input'
 import InputLabel from '@mui/material/InputLabel'
 import Button from '@mui/material/Button'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
-function AddWord() {
+function AddWord({ callSnackbar }: any) {
   const navigate = useNavigate()
   const [original, setOriginal] = useState()
   const [translated, setTranslated] = useState()
   const [knowledge, setKnowledge] = useState(1)
   const [relevance, setRelevance] = useState(1)
 
-  function onSubmit(e: any){
+  function onSubmit(e: any) {
     e.preventDefault()
 
     const date = new Date();
@@ -44,19 +46,20 @@ function AddWord() {
 
     httpRequest('POST', `words/`, payload)
     navigate('/')
+    callSnackbar('Word successfully created')
   }
 
   return (
     <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-      <Typography variant="h5" align="center" sx={{mb: 4, fontWeight: 700}}>
+      <Typography variant="h5" align="center" sx={{ mb: 4, fontWeight: 700 }}>
         New Word
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <TextField required fullWidth label='Original Word' id="original-word" value={original} onChange={(e: any) => {setOriginal(e.target.value)}} />
+          <TextField required fullWidth label='Original Word' id="original-word" value={original} onChange={(e: any) => { setOriginal(e.target.value) }} />
         </Grid>
         <Grid item xs={12}>
-          <TextField required fullWidth label='Translated Word' id="translated-word" value={translated} onChange={(e: any) => {setTranslated(e.target.value)}} />
+          <TextField required fullWidth label='Translated Word' id="translated-word" value={translated} onChange={(e: any) => { setTranslated(e.target.value) }} />
         </Grid>
         <Grid item xs={12}>
           <FormControl variant="standard">
@@ -86,7 +89,7 @@ function AddWord() {
         </Grid>
         <Grid item xs={12}>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="contained" sx={{ mt: 3, ml: 1 }} onClick={(e) => {onSubmit(e)}}>Submit</Button>
+            <Button variant="contained" sx={{ mt: 3, ml: 1 }} onClick={(e) => { onSubmit(e) }}>Submit</Button>
           </Box>
         </Grid>
       </Grid>

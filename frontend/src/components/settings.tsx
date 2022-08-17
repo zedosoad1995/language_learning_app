@@ -6,9 +6,13 @@ import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { useEffect, useState } from "react"
 import httpRequest from '../services/httpRequest'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert'
+
 
 export default function Settings({ user, updateUser }: any) {
 	const [numDailyWords, setNumDailyWords]: [any, any] = useState()
+	const [open, setOpen] = useState(false)
 
 	useEffect(() => {
 		if (user && 'num_daily_words' in user) {
@@ -17,6 +21,8 @@ export default function Settings({ user, updateUser }: any) {
 	}, [JSON.stringify(user)])
 
 	const onEdit = async () => {
+		setOpen(true)
+
 		const data = {
 			num_daily_words: numDailyWords
 		}
@@ -25,8 +31,17 @@ export default function Settings({ user, updateUser }: any) {
 		updateUser()
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+	}
+
 	return (
 		<Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+				<Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+					Settings successfully updated
+				</Alert>
+			</Snackbar>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					{numDailyWords &&

@@ -13,11 +13,15 @@ import { logIn } from '../slices/login'
 import { useDispatch, useSelector } from 'react-redux'
 import Settings from "./settings";
 import httpRequest from "../services/httpRequest";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 
 function LoggedContent() {
   const dispatch = useDispatch()
   const [user, setUser] = useState()
+  const [open, setOpen] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
 
   const getUser = () => {
     httpRequest('GET', `users/me/`)
@@ -41,14 +45,31 @@ function LoggedContent() {
     getUser()
   }, [JSON.stringify(user)])
 
+  const callSnackbar = (msg: string) => {
+    setOpen(true)
+    setAlertMessage(msg)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setAlertMessage('')
+  }
+
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/add_word" element={<AddWord />} />
-      <Route path="/word_list" element={<WordsList />} />
-      <Route path="/word/:id" element={<WordDetail />} />
-      <Route path="/settings" element={<Settings user={user} updateUser={getUser} />} />
-    </Routes>
+    <>
+      <Snackbar open={open && alertMessage !== ''} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/add_word" element={<AddWord callSnackbar={callSnackbar} />} />
+        <Route path="/word_list" element={<WordsList callSnackbar={callSnackbar} />} />
+        <Route path="/word/:id" element={<WordDetail callSnackbar={callSnackbar} />} />
+        <Route path="/settings" element={<Settings user={user} updateUser={getUser} />} />
+      </Routes>
+    </>
   );
 }
 

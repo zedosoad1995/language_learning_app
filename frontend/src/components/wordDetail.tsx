@@ -7,9 +7,9 @@ import { useNavigate } from 'react-router-dom'
 import WordCard from './wordCard'
 
 
-function WordDetail() {
+function WordDetail({ callSnackbar }: any) {
 	const [word, setWord]: [any, any] = useState()
-	
+
 	const navigate = useNavigate()
 
 	const { id } = useParams()
@@ -22,11 +22,13 @@ function WordDetail() {
 		}
 		httpRequest('PATCH', `words/${id}/`, data)
 			.then(() => navigate(-1))
+			.then(() => callSnackbar('Word successfully edited'))
 	}
 
 	const onRemove = () => {
 		httpRequest('DEL', `words/${id}/`)
 			.then(() => navigate(-1))
+			.then(() => callSnackbar('Word successfully removed'))
 	}
 
 	useEffect(() => {
@@ -46,8 +48,8 @@ function WordDetail() {
 				<Button onClick={onEdit}>Edit</Button>
 				<Button onClick={onRemove}>Remove</Button>
 			</>
-		} changeWord={changeWord}/>
-  );
+		} changeWord={changeWord} />
+	);
 }
 
 export default WordDetail;

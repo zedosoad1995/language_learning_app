@@ -15,7 +15,7 @@ import InputBase from "@mui/material/InputBase"
 import Divider from "@mui/material/Divider"
 
 
-export default function WordsList() {
+export default function WordsList({ callSnackbar }: any) {
   const [textFilter, setTextFilter]: [any, any] = useState('')
   const [words, setWords]: [any, any] = useState([])
   const navigate = useNavigate()
@@ -37,6 +37,7 @@ export default function WordsList() {
     const id = e.currentTarget.getAttribute('data-index')
     httpRequest('DEL', `words/${id}/`)
       .then(() => { updateList() })
+      .then(() => callSnackbar('Word successfully deleted'))
   }
 
   const getWordDetails = (e: any) => {
