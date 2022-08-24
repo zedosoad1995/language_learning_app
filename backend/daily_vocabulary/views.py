@@ -1,4 +1,4 @@
-from language_learning.settings import TIME_ZONE
+from language_learning.settings import TIME_ZONE, EMAIL_FROM_USER
 
 from .utils.utils import calculate_new_score, get_datetime_as_timezone, get_days_since
 from .models import User, Word
@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from django.utils import timezone
+from django.core.mail import EmailMessage, send_mail
 from datetime import datetime
 from pytz import timezone as py_timezone
 from pytz.exceptions import UnknownTimeZoneError
@@ -37,7 +38,6 @@ def current_user(request):
             serializer.save()
             return JsonResponse(serializer.data)
         return JsonResponse(serializer.errors, status=400)
-    
 
 
 @api_view(['POST'])
@@ -59,26 +59,30 @@ def user_list(request):
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            send_mail(subject='hi', message='hi', from_email=EMAIL_FROM_USER,
+                      recipient_list=[data['email']])
             return JsonResponse(serializer.data, status=201)
 
         return JsonResponse(serializer.errors, status=400)
-        
 
 
 def update_words(now, days_since_last_update):
     words = Word.objects.filter(is_learned=False)
     for word in words:
         days_since_curr_word = get_days_since(now, word.created_at_local)
-        days_since_last_update = min(days_since_last_update, days_since_curr_word)
+        days_since_last_update = min(
+            days_since_last_update, days_since_curr_word)
 
         if days_since_last_update > 0:
             if word.is_seen:
                 word.score = 0
                 word.is_seen = False
             else:
-                word.score += calculate_new_score(days_since_last_update, word.relevance, word.knowledge)
+                word.score += calculate_new_score(
+                    days_since_last_update, word.relevance, word.knowledge)
 
         word.save()
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
@@ -91,7 +95,8 @@ def update_word_scores(request):
     logged_user = User.objects.filter(id=request.auth.get('user_id')).first()
 
     try:
-        prev_update = get_datetime_as_timezone(logged_user.last_update, logged_user.timezone)
+        prev_update = get_datetime_as_timezone(
+            logged_user.last_update, logged_user.timezone)
 
         tz_name = data.get('timezone', logged_user.timezone)
         now_utc = timezone.now()
@@ -121,22 +126,22 @@ def daily_words_list(request):
     user_id = request.auth.get('user_id')
     logged_user = User.objects.filter(id=user_id).first()
 
-    current_date = get_datetime_as_timezone(timezone.now(), logged_user.timezone)
+    current_date = get_datetime_as_timezone(
+        timezone.now(), logged_user.timezone)
 
     # To exclude words added in that day (or after) to being returned
     current_day_filter = {
         'created_at_local__date__gte': current_date.date(),
-        #'created_at_local__time__gte': current_date.time().replace(second=0, microsecond=0) # TODO: remove
+        # 'created_at_local__time__gte': current_date.time().replace(second=0, microsecond=0) # TODO: remove
     }
 
     num_daily_words = logged_user.num_daily_words
     words = Word.objects.filter(user__id=user_id, is_learned=False)\
-            .exclude(**current_day_filter)\
-            .order_by('-score')[:num_daily_words]
+        .exclude(**current_day_filter)\
+        .order_by('-score')[:num_daily_words]
 
     serializer = WordSerializer(words, many=True)
     return JsonResponse(serializer.data, safe=False)
-
 
 
 @api_view(['GET', 'POST'])
@@ -190,5 +195,3 @@ def word_detail(request, pk):
     elif request.method == 'DELETE':
         word.delete()
         return HttpResponse(status=204)
-
-

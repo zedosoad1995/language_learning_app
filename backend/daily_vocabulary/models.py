@@ -50,6 +50,7 @@ class User(AbstractUser):
     is_superuser = BooleanField(default=False)
     is_staff = BooleanField(default=False)
     is_active = BooleanField(default=True)
+    is_email_verified = BooleanField(default=False)
 
     objects = UserManager()
 
