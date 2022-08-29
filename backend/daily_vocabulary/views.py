@@ -1,20 +1,33 @@
-from language_learning.settings import TIME_ZONE, EMAIL_FROM_USER
-
-from .utils.utils import calculate_new_score, get_datetime_as_timezone, get_days_since
-from .models import User, Word
-from .serializers import UserSerializer, WordSerializer, WordPatchSerializer, WordPostSerializer
-from django.http import HttpResponse, JsonResponse
-from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view
-from django.utils import timezone
-from django.core.mail import EmailMessage, send_mail
-from datetime import datetime
-from pytz import timezone as py_timezone
-from pytz.exceptions import UnknownTimeZoneError
-
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.decorators import permission_classes
+from .tokens import account_activation_token
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 from django.db.models.functions import Lower
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from pytz.exceptions import UnknownTimeZoneError
+from pytz import timezone as py_timezone
+from datetime import datetime
+from django.core.mail import EmailMessage, send_mail
+from django.utils import timezone
+from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse, JsonResponse
+from .serializers import UserSerializer, WordSerializer, WordPatchSerializer, WordPostSerializer
+from .models import User, Word
+from .utils.utils import calculate_new_score, get_datetime_as_timezone, get_days_since
+from language_learning.settings import TIME_ZONE, EMAIL_FROM_USER
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+
+
+from django.template.loader import render_to_string
+
+import os
+
+FRONTEND_HOST = os.getenv('FRONTEND_HOST')
 
 
 @api_view(['GET', 'PATCH'])
@@ -59,8 +72,21 @@ def user_list(request):
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            send_mail(subject='hi', message='hi', from_email=EMAIL_FROM_USER,
-                      recipient_list=[data['email']])
+
+            domain = get_current_site(request).domain
+
+            uid = urlsafe_base64_encode(force_bytes(serializer.instance.id))
+            token = account_activation_token.make_token(serializer.instance)
+
+            message = render_to_string('account_activation_email.html', {
+                'user': serializer.instance,
+                'domain': get_current_site(request).domain,
+                'uid': urlsafe_base64_encode(force_bytes(serializer.instance.id)),
+                'token': account_activation_token.make_token(serializer.instance),
+            })
+
+            send_mail(subject='Language Learning: Account activation', message=message, from_email=EMAIL_FROM_USER,
+                      recipient_list=[serializer.instance.email])
             return JsonResponse(serializer.data, status=201)
 
         return JsonResponse(serializer.errors, status=400)
@@ -195,3 +221,20 @@ def word_detail(request, pk):
     elif request.method == 'DELETE':
         word.delete()
         return HttpResponse(status=204)
+
+
+@api_view(['GET'])
+def validate_user(request, uidb64, token, *args, **kwargs):
+    if request.method == 'GET':
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_email_verified = True
+            user.save()
+            return HttpResponseRedirect(f'{FRONTEND_HOST}/login', status=302)
+        else:
+            return HttpResponse(status=401)

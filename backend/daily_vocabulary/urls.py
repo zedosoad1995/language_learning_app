@@ -8,4 +8,5 @@ urlpatterns = [
     path('words/<int:pk>/', views.word_detail),
     path('words/update/', views.update_word_scores),
     path('words/daily/', views.daily_words_list),
+    path('activate/<uidb64>/<token>/', views.validate_user, name='activate'),
 ]
