@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse, JsonResponse
-from .serializers import UserSerializer, WordSerializer, WordPatchSerializer, WordPostSerializer
+from .serializers import UserSerializer, UserResetPasswordSerializer, WordSerializer, WordPatchSerializer, WordPostSerializer
 from .models import User, Word
 from .utils.utils import calculate_new_score, get_datetime_as_timezone, get_days_since
 from language_learning.settings import TIME_ZONE, EMAIL_FROM_USER
@@ -238,3 +238,32 @@ def validate_user(request, uidb64, token, *args, **kwargs):
             return HttpResponseRedirect(f'{FRONTEND_HOST}/login', status=302)
         else:
             return HttpResponse(status=401)
+
+
+@api_view(['PUT'])
+def reset_password(request):
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = UserResetPasswordSerializer(data=data)
+
+        if serializer.is_valid():
+            email = serializer.data['email']
+
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return JsonResponse({'message': 'Email does not exist'}, status=400)
+
+            message = render_to_string('reset_password.html', {
+                'user': user,
+                'domain': FRONTEND_HOST,
+                'uid': urlsafe_base64_encode(force_bytes(user.id)),
+                'token': account_activation_token.make_token(user),
+            })
+
+            send_mail(subject='Language Learning: Reset Password', message=message, from_email=EMAIL_FROM_USER,
+                      recipient_list=[email])
+
+            return JsonResponse(serializer.data, status=200)
+
+        return JsonResponse(serializer.errors, status=400)
