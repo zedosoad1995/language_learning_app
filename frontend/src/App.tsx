@@ -7,6 +7,7 @@ import Header from "./components/header";
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box'
 import LoggedContent from "./components/loggedContent";
+import ResetPassword from "./components/resetPassword";
 
 
 function App() {
@@ -14,12 +15,13 @@ function App() {
     <Router>
       <Header />
       <Container maxWidth="sm">
-        <Box sx={{m: 2}}>
+        <Box sx={{ m: 2 }}>
           <Routes>
             <Route path="*" element={<LoggedContent />} />
             <Route path="/login" element={<SignIn />} />
             <Route path="/register" element={<SignUp />} />
             <Route path="/logout" element={<Logout />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
         </Box>
       </Container>

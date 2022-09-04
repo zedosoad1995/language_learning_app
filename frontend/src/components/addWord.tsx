@@ -12,13 +12,7 @@ import TextField from '@mui/material/TextField'
 import Rating from '@mui/material/Rating'
 import Box from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
-import Input from '@mui/material/Input'
-import InputLabel from '@mui/material/InputLabel'
 import Button from '@mui/material/Button'
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-
 
 function AddWord({ callSnackbar }: any) {
   const navigate = useNavigate()
