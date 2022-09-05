@@ -39,6 +39,7 @@ function Home() {
   }, [])
 
   const onUpdateDailyUnseenWords = () => {
+    console.log('Update')
     fetchData()
   }
 
@@ -54,7 +55,7 @@ function Home() {
         <AddIcon />
       </Fab>
       {isDailyWordsSeen ?
-        <WordsOfTheDay words={words} />
+        <WordsOfTheDay words={words} updateWords={onUpdateDailyUnseenWords} />
         : <DailyUnseenWord words={words} onUpdateWords={onUpdateDailyUnseenWords} />}
     </>
   );
