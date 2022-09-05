@@ -10,4 +10,5 @@ urlpatterns = [
     path('words/daily/', views.daily_words_list),
     path('activate/<uidb64>/<token>/', views.validate_user, name='activate'),
     path('reset-password', views.reset_password),
+    path('set-password/<uidb64>/<token>/', views.set_password),
 ]

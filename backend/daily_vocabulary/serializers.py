@@ -19,6 +19,12 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+class UserSetPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['password']
+
+
 class UserResetPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

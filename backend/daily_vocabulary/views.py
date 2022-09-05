@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse, JsonResponse
-from .serializers import UserSerializer, UserResetPasswordSerializer, WordSerializer, WordPatchSerializer, WordPostSerializer
+from .serializers import UserSerializer, UserResetPasswordSerializer, UserSetPasswordSerializer, WordSerializer, WordPatchSerializer, WordPostSerializer
 from .models import User, Word
 from .utils.utils import calculate_new_score, get_datetime_as_timezone, get_days_since
 from language_learning.settings import TIME_ZONE, EMAIL_FROM_USER
@@ -265,5 +265,29 @@ def reset_password(request):
                       recipient_list=[email])
 
             return JsonResponse(serializer.data, status=200)
+
+        return JsonResponse(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def set_password(request, uidb64, token):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = UserSetPasswordSerializer(data=data)
+
+        if serializer.is_valid():
+            try:
+                uid = force_str(urlsafe_base64_decode(uidb64))
+                user = User.objects.get(id=uid)
+            except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+                user = None
+
+            if user is not None and account_activation_token.check_token(user, token):
+                password = serializer.data['password']
+                user.set_password(password)
+                user.save()
+                return JsonResponse({'message': 'Password successfully reset'}, status=200)
+            else:
+                return HttpResponse(status=401)
 
         return JsonResponse(serializer.errors, status=400)

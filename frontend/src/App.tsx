@@ -8,6 +8,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box'
 import LoggedContent from "./components/loggedContent";
 import ResetPassword from "./components/resetPassword";
+import NewPassword from "./components/newPassword";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="/register" element={<SignUp />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/set-password/:uid/:token" element={<NewPassword />} />
           </Routes>
         </Box>
       </Container>
