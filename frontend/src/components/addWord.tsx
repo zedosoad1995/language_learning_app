@@ -1,6 +1,3 @@
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react"
@@ -16,10 +13,10 @@ import Button from '@mui/material/Button'
 
 function AddWord({ callSnackbar }: any) {
   const navigate = useNavigate()
-  const [original, setOriginal] = useState()
-  const [translated, setTranslated] = useState()
-  const [knowledge, setKnowledge] = useState(1)
-  const [relevance, setRelevance] = useState(1)
+  const [original, setOriginal] = useState<string>('')
+  const [translated, setTranslated] = useState<string>('')
+  const [knowledge, setKnowledge] = useState<number>(1)
+  const [relevance, setRelevance] = useState<number>(1)
 
   function onSubmit(e: any) {
     e.preventDefault()
@@ -38,9 +35,21 @@ function AddWord({ callSnackbar }: any) {
       created_at_local: moment(date).add(offset_minutes, 'm').format("YYYY-MM-DDTHH:mm:ss.sssZZ")
     }
 
+    if (original === '') return callSnackbar('Field "Original Word" is required', true)
+    if (original.length > 100) return callSnackbar('Field "Original Word" too long. Must have less than 100 characters', true)
+    if (translated === '') return callSnackbar('Field "Translated Word" is required', true)
+    if (translated.length > 350) return callSnackbar('Field "Translated Word" too long. Must have less than 350 characters', true)
+    if (knowledge < 1 || knowledge > 5) return callSnackbar('Field "knowledge" must be between 1 and 5 starts', true)
+    if (relevance < 1 || relevance > 5) return callSnackbar('Field "relevance" must be between 1 and 5 starts', true)
+
     httpRequest('POST', `words/`, payload)
-    navigate('/')
-    callSnackbar('Word successfully created')
+      .then(() => {
+        navigate('/')
+        callSnackbar('Word successfully created')
+      })
+      .catch(() => {
+        console.log('Error')
+      })
   }
 
   return (

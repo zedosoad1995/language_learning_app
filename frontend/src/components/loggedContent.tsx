@@ -22,6 +22,7 @@ function LoggedContent() {
   const [user, setUser] = useState()
   const [open, setOpen] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
+  const [isSnackbarError, setIsSnackbarError] = useState(false)
 
   const getUser = () => {
     httpRequest('GET', `users/me/`)
@@ -45,7 +46,8 @@ function LoggedContent() {
     getUser()
   }, [JSON.stringify(user)])
 
-  const callSnackbar = (msg: string) => {
+  const callSnackbar = (msg: string, isError: boolean = false) => {
+    setIsSnackbarError(isError)
     setOpen(true)
     setAlertMessage(msg)
   }
@@ -58,7 +60,7 @@ function LoggedContent() {
   return (
     <>
       <Snackbar open={open && alertMessage !== ''} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleClose} severity={(isSnackbarError) ? "error" : "success"} sx={{ width: '100%' }}>
           {alertMessage}
         </Alert>
       </Snackbar>
