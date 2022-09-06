@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     fieldsets = [
         (None, {
-            'fields': ('username', 'email', 'first_name', 'last_name', 'timezone',
+            'fields': ('username', 'email', 'first_name', 'last_name', 'last_update', 'timezone',
                        'num_daily_words', 'is_staff', 'is_superuser', 'is_active', 'is_email_verified')
         })
     ]

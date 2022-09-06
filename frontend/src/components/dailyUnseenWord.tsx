@@ -4,12 +4,12 @@ import httpRequest from '../services/httpRequest'
 import WordCard from './wordCard'
 
 
-function TestCard({words, onUpdateWords}: {words: Array<any>, onUpdateWords: any}) {
+function TestCard({ words, updateWords }: { words: Array<any>, updateWords: any }) {
 	const [word, setWord]: [any, any] = useState()
 
 	const getUnseenWord = () => {
 		const unseenWord = words.find((word: any) => !word.is_seen)
-		if(!unseenWord){
+		if (!unseenWord) {
 			setWord()
 			return
 		}
@@ -18,7 +18,7 @@ function TestCard({words, onUpdateWords}: {words: Array<any>, onUpdateWords: any
 	}
 
 	const nextWord = () => {
-		if(word && 'id' in word){
+		if (word && 'id' in word) {
 			const data = {
 				knowledge: word.knowledge,
 				relevance: word.relevance,
@@ -28,23 +28,23 @@ function TestCard({words, onUpdateWords}: {words: Array<any>, onUpdateWords: any
 
 			httpRequest('PATCH', `words/${word.id}/`, data)
 				.then(() => {
-					onUpdateWords()
+					updateWords()
 				})
 		}
 	}
 
-  useEffect(() => {
-    getUnseenWord()
-		onUpdateWords()
-  }, [JSON.stringify(words)])
+	useEffect(() => {
+		getUnseenWord()
+		updateWords()
+	}, [JSON.stringify(words)])
 
 	const changeWord = (newWord: any) => {
 		setWord(newWord)
 	}
 
 	return (
-		<WordCard word={word} cardActions={<Button onClick={nextWord} >Next Word</Button>} changeWord={changeWord}/>
-  );
+		<WordCard word={word} cardActions={<Button onClick={nextWord} >Next Word</Button>} changeWord={changeWord} />
+	);
 }
 
 export default TestCard;

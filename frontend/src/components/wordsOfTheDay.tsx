@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { Box } from '@mui/material'
 import { useTimer } from 'react-timer-hook'
 import { useEffect, useState } from 'react';
-import httpRequest from '../services/httpRequest';
 
 
 function WordsOfTheDay({ words, updateWords }: { words: Array<any>, updateWords: any }) {
@@ -31,11 +30,9 @@ function WordsOfTheDay({ words, updateWords }: { words: Array<any>, updateWords:
 
   const onTimerExpire = () => {
     updateWords()
-      .then(() => {
-        const time = new Date()
-        time.setHours(24, 0, 0, 0)
-        setExpiryTimestamp(time)
-      })
+    const time = new Date()
+    time.setHours(24, 0, 0, 0)
+    setExpiryTimestamp(time)
   }
 
   const {
@@ -52,7 +49,7 @@ function WordsOfTheDay({ words, updateWords }: { words: Array<any>, updateWords:
       <Box sx={{ textAlign: 'center', mb: 2 }}>
         <Box sx={{ display: 'inline-block' }}>
           <Typography variant='h4' sx={{ fontWeight: 600, mb: 0 }}>Words of the day</Typography>
-          <Typography variant='subtitle2' sx={{ textAlign: 'left', lineHeight: 1 }}>Next set of Words - {formatedTime}</Typography>
+          <Typography variant='subtitle2' sx={{ textAlign: 'left', lineHeight: 1, fontSize: '0.8rem', color: 'rgba(0, 0, 0, 0.6)' }}>Next set of Words - {formatedTime}</Typography>
         </Box>
       </Box>
       <Stack spacing={2}>

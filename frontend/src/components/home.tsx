@@ -34,13 +34,12 @@ function Home() {
   }
 
   useEffect(() => {
-    updateData()
-      .then(fetchData)
+    updateWords()
   }, [])
 
-  const onUpdateDailyUnseenWords = () => {
-    console.log('Update')
-    fetchData()
+  const updateWords = () => {
+    updateData()
+      .then(fetchData)
   }
 
   const fabStyle = {
@@ -55,8 +54,8 @@ function Home() {
         <AddIcon />
       </Fab>
       {isDailyWordsSeen ?
-        <WordsOfTheDay words={words} updateWords={onUpdateDailyUnseenWords} />
-        : <DailyUnseenWord words={words} onUpdateWords={onUpdateDailyUnseenWords} />}
+        <WordsOfTheDay words={words} updateWords={updateWords} />
+        : <DailyUnseenWord words={words} updateWords={updateWords} />}
     </>
   );
 }
