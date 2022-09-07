@@ -7,7 +7,6 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-//import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -18,7 +17,7 @@ import { logIn } from '../slices/login'
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SignIn({ callSnackbar }: any) {
   const navigate = useNavigate();
 
   const loggedIn = useSelector((state: any) => state.login.loggedIn)
@@ -35,15 +34,18 @@ export default function SignIn() {
 
     httpRequest('POST', 'token/', payload)
       .then((res) => {
+        console.log('lololol')
         localStorage.setItem('access_token', res.data.access)
         localStorage.setItem('refresh_token', res.data.refresh)
         navigate('/')
         dispatch(logIn())
       })
+      .catch((err) => {
+        callSnackbar('Invalid Username or Password', true)
+      })
   }
 
   useEffect(() => {
-    console.log('Login', loggedIn)
     if (loggedIn) {
       navigate('/')
     }

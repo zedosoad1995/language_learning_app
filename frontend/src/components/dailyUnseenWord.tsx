@@ -4,7 +4,7 @@ import httpRequest from '../services/httpRequest'
 import WordCard from './wordCard'
 
 
-function TestCard({ words, updateWords }: { words: Array<any>, updateWords: any }) {
+function DailyUnseenWord({ words, updateWords, callSnackbar }: { words: Array<any>, updateWords: any, callSnackbar: any }) {
 	const [word, setWord]: [any, any] = useState()
 
 	const getUnseenWord = () => {
@@ -25,6 +25,9 @@ function TestCard({ words, updateWords }: { words: Array<any>, updateWords: any 
 				is_seen: true,
 				is_learned: word.is_learned
 			}
+
+			if (word.knowledge < 1 || word.knowledge > 5) return callSnackbar('Field "knowledge" must be between 1 and 5 starts', true)
+			if (word.relevance < 1 || word.relevance > 5) return callSnackbar('Field "relevance" must be between 1 and 5 starts', true)
 
 			httpRequest('PATCH', `words/${word.id}/`, data)
 				.then(() => {
@@ -47,4 +50,4 @@ function TestCard({ words, updateWords }: { words: Array<any>, updateWords: any 
 	);
 }
 
-export default TestCard;
+export default DailyUnseenWord;

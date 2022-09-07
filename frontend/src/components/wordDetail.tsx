@@ -20,6 +20,10 @@ function WordDetail({ callSnackbar }: any) {
 			relevance: word.relevance,
 			is_learned: word.is_learned
 		}
+
+		if (word.knowledge < 1 || word.knowledge > 5) return callSnackbar('Field "knowledge" must be between 1 and 5 starts', true)
+		if (word.relevance < 1 || word.relevance > 5) return callSnackbar('Field "relevance" must be between 1 and 5 starts', true)
+
 		httpRequest('PATCH', `words/${id}/`, data)
 			.then(() => navigate(-1))
 			.then(() => callSnackbar('Word successfully edited'))

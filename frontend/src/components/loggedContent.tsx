@@ -6,23 +6,16 @@ import SignUp from "../components/signUp";
 import Header from "../components/header";
 import WordsList from "../components/wordsList";
 import WordDetail from "../components/wordDetail";
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box'
 import { useEffect, useState } from "react"
 import { logIn } from '../slices/login'
 import { useDispatch, useSelector } from 'react-redux'
 import Settings from "./settings";
 import httpRequest from "../services/httpRequest";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 
 
-function LoggedContent() {
+function LoggedContent({ callSnackbar }: any) {
   const dispatch = useDispatch()
   const [user, setUser] = useState()
-  const [open, setOpen] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [isSnackbarError, setIsSnackbarError] = useState(false)
 
   const getUser = () => {
     httpRequest('GET', `users/me/`)
@@ -46,26 +39,10 @@ function LoggedContent() {
     getUser()
   }, [JSON.stringify(user)])
 
-  const callSnackbar = (msg: string, isError: boolean = false) => {
-    setIsSnackbarError(isError)
-    setOpen(true)
-    setAlertMessage(msg)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-    setAlertMessage('')
-  }
-
   return (
     <>
-      <Snackbar open={open && alertMessage !== ''} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={(isSnackbarError) ? "error" : "success"} sx={{ width: '100%' }}>
-          {alertMessage}
-        </Alert>
-      </Snackbar>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home callSnackbar={callSnackbar} />} />
         <Route path="/add_word" element={<AddWord callSnackbar={callSnackbar} />} />
         <Route path="/word_list" element={<WordsList callSnackbar={callSnackbar} />} />
         <Route path="/word/:id" element={<WordDetail callSnackbar={callSnackbar} />} />

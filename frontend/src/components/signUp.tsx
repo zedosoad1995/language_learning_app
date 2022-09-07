@@ -19,10 +19,10 @@ import NativeSelect from '@mui/material/NativeSelect'
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function SignUp({ callSnackbar }: any) {
   const navigate = useNavigate()
   const [numDailyWords, setNumDailyWords]: [any, any] = useState(3)
-	
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -37,13 +37,31 @@ export default function SignUp() {
       num_daily_words: numDailyWords
     }
 
+    if (payload.username === '') return callSnackbar("Field 'username' is required", true)
+    if (payload.password === '') return callSnackbar("Field 'password' is required", true)
+    if (payload.email === '') return callSnackbar("Field 'email' is required", true)
+    if (payload.first_name === '') return callSnackbar("Field 'first name' is required", true)
+    if (payload.last_name === '') return callSnackbar("Field 'last name' is required", true)
+
     localStorage.removeItem('access_token')
-		localStorage.removeItem('refresh_token')
+    localStorage.removeItem('refresh_token')
 
     httpRequest('POST', 'users/', payload)
-			.then(() => {
-				navigate('/login')
-			})
+      .then(() => {
+        navigate('/login')
+      })
+      .catch((err) => {
+        if (typeof err === 'string') {
+          callSnackbar(err, true)
+        } else {
+          try {
+            const firstError = (Object.values(err.response.data)[0] as Array<string>)[0]
+            callSnackbar(firstError, true)
+          } catch {
+            callSnackbar('Registration Error', true)
+          }
+        }
+      })
   };
 
   return (
@@ -129,7 +147,7 @@ export default function SignUp() {
                       id: 'daily-words',
                     }}
                     value={numDailyWords}
-                    onChange={(e) => {setNumDailyWords(e.target.value)}}
+                    onChange={(e) => { setNumDailyWords(e.target.value) }}
                   >
                     <option value={1}>1</option>
                     <option value={3}>3</option>

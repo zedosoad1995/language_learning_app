@@ -5,11 +5,9 @@ import AddIcon from '@mui/icons-material/Add'
 import DailyUnseenWord from "./dailyUnseenWord"
 import WordsOfTheDay from "./wordsOfTheDay"
 import httpRequest from "../services/httpRequest"
-import Snackbar from "@mui/material/Snackbar"
-import Alert from "@mui/material/Alert"
 
 
-function Home() {
+function Home({ callSnackbar }: any) {
   const navigate = useNavigate();
   const [words, setWords] = useState([])
   const [isDailyWordsSeen, setIsDailyWordsSeen] = useState(true)
@@ -55,7 +53,7 @@ function Home() {
       </Fab>
       {isDailyWordsSeen ?
         <WordsOfTheDay words={words} updateWords={updateWords} />
-        : <DailyUnseenWord words={words} updateWords={updateWords} />}
+        : <DailyUnseenWord words={words} updateWords={updateWords} callSnackbar={callSnackbar} />}
     </>
   );
 }
